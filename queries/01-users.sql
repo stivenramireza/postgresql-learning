@@ -36,3 +36,7 @@ WHERE name LIKE '_elissa%';
 DELETE
 FROM users
 WHERE name LIKE '_elissa%';
+
+DROP TABLE users;
+
+TRUNCATE TABLE users;
