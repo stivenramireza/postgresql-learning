@@ -8,8 +8,7 @@ WHERE email LIKE '%@google.com';
 -- Tip: distinct
 SELECT DISTINCT(country)
 FROM users
-WHERE email LIKE '%@google.com'
-ORDER BY country ASC;
+WHERE email LIKE '%@google.com';
 
 -- 3. Cuantos usuarios hay por país (country)
 -- Tip: Group by
@@ -17,8 +16,7 @@ SELECT
 	country,
 	COUNT(*)
 FROM users
-GROUP BY country
-ORDER BY country ASC;
+GROUP BY country;
 
 -- 4. Listado de direcciones IP de todos los usuarios de Iceland
 -- Campos requeridos first_name, last_name, country, last_connection
@@ -47,8 +45,7 @@ SELECT
 	last_connection
 FROM users
 WHERE country = 'Iceland'
-AND ((last_connection LIKE '112.%') OR (last_connection LIKE '28.%') OR( last_connection LIKE '188.%'));
-
+AND (last_connection LIKE '112.%' OR last_connection LIKE '28.%' OR last_connection LIKE '188.%');
 
 -- 7. Ordene el resultado anterior, por apellido (last_name) ascendente
 -- y luego el first_name ascendentemente también
@@ -59,7 +56,7 @@ SELECT
 	last_connection
 FROM users
 WHERE country = 'Iceland'
-AND ((last_connection LIKE '112.%') OR (last_connection LIKE '28.%') OR( last_connection LIKE '188.%'))
+AND (last_connection LIKE '112.%' OR last_connection LIKE '28.%' OR last_connection LIKE '188.%')
 ORDER BY last_name ASC, first_name ASC;
 
 -- 8. Listado de personas cuyo país está en este listado
@@ -68,9 +65,9 @@ ORDER BY last_name ASC, first_name ASC;
 -- Tip: Investigar IN
 -- Tip2: Ver Operadores de Comparación en la hoja de atajos (primera página)
 SELECT
+	country,
 	first_name,
-	last_name,
-	country
+	last_name
 FROM users
 WHERE country IN ('Mexico', 'Honduras', 'Costa Rica')
 ORDER BY country ASC, first_name ASC, last_name ASC;
