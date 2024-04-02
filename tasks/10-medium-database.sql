@@ -116,7 +116,6 @@ SELECT
 	content
 FROM comments
 WHERE comment_id = 1
-AND comment_parent_id IS NULL
 UNION
 SELECT
 	comment_id,
@@ -124,8 +123,7 @@ SELECT
 	user_id,
 	content
 FROM comments
-WHERE comment_parent_id = 1
-ORDER BY comment_id ASC;
+WHERE comment_parent_id = 1;
 
 -- ** 10. Avanzado
 -- Investigar sobre el json_agg y json_build_object
@@ -137,13 +135,12 @@ ORDER BY comment_id ASC;
 /*
 "[{""user"" : 1797, ""comment"" : ""tempor mollit aliqua dolore cupidatat dolor tempor""}, {""user"" : 1842, ""comment"" : ""laborum mollit amet aliqua enim eiusmod ut""}, {""user"" : 1447, ""comment"" : ""nostrud nulla duis enim duis reprehenderit laboris voluptate cupidatat""}]"
 */
-SELECT 
-	JSON_AGG(
-		JSON_BUILD_OBJECT(
-			'user', user_id,
-			'comment', content
-		)
-	) AS user_comments
+SELECT JSON_AGG(
+	JSON_BUILD_OBJECT(
+		'user', user_id,
+		'comment', content
+	)
+)
 FROM comments
 WHERE comment_parent_id = 1;
 
@@ -151,13 +148,41 @@ WHERE comment_parent_id = 1;
 -- Listar todos los comentarios principales (no respuestas) 
 -- Y crear una columna adicional "replies" con las respuestas en formato JSON
 SELECT
-	comment_parent_id,
-	JSON_AGG(
+	a.*,
+	comment_replies(a.comment_id)
+FROM comments AS a
+WHERE a.comment_parent_id IS NULL;
+
+CREATE OR REPLACE FUNCTION comment_replies(id integer)
+RETURNS JSON
+AS
+$$
+DECLARE result JSON;
+BEGIN
+	SELECT JSON_AGG(
 		JSON_BUILD_OBJECT(
 			'user', user_id,
 			'comment', content
 		)
-	) AS user_comments
-FROM comments
-WHERE comment_parent_id IS NOT NULL
-GROUP BY comment_parent_id;
+	) INTO result
+	FROM comments
+	WHERE comment_parent_id = id;
+
+	return result;
+END;
+$$
+LANGUAGE plpgsql;
+
+-- Functions intro
+CREATE OR REPLACE FUNCTION sayHello(username VARCHAR)
+RETURNS VARCHAR
+AS
+$$
+BEGIN
+	return 'Hello ' || username;
+END;
+$$
+LANGUAGE plpgsql;
+
+SELECT sayHello(username)
+FROM users;
