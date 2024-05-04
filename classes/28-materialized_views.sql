@@ -1,3 +1,4 @@
+-- Create materialized views
 CREATE MATERIALIZED VIEW comments_per_week_mat AS (
 	SELECT 
 		DATE_TRUNC('week', p.created_at) AS weeks, 
@@ -21,3 +22,9 @@ REFRESH MATERIALIZED VIEW comments_per_week_mat;
 SELECT *
 FROM posts
 WHERE post_id = 1;
+
+-- Rename materialized views
+SELECT *
+FROM posts_per_week_mat;
+
+ALTER MATERIALIZED VIEW comments_per_week_mat RENAME TO posts_per_week_mat;

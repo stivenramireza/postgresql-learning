@@ -1,3 +1,4 @@
+-- Create views
 CREATE OR REPLACE VIEW comments_per_week AS (
 	SELECT 
 		DATE_TRUNC('week', p.created_at) AS weeks, 
@@ -18,3 +19,9 @@ SELECT *
 FROM comments_per_week;
 
 DROP VIEW comments_per_week;
+
+-- Rename views
+SELECT *
+FROM posts_per_week;
+
+ALTER VIEW comments_per_week RENAME TO posts_per_week;
