@@ -60,3 +60,36 @@ SELECT
 	first_name,
 	max_raise(employee_id)
 FROM employees;
+
+-- max_raise_2 function
+CREATE OR REPLACE FUNCTION max_raise_2(empl_id INT)
+RETURNS NUMERIC(8,2) AS $$
+DECLARE 
+	employee_job_id INT;
+	current_salary NUMERIC(8,2);
+	job_max_salary NUMERIC(8,2);
+	possible_raise NUMERIC(8,2);
+BEGIN
+	-- Take the job position and the salary
+	SELECT job_id, salary INTO employee_job_id, current_salary
+	FROM employees 
+	WHERE employee_id = empl_id;
+	
+	-- Take the max salary based on his job position
+	SELECT max_salary INTO job_max_salary
+	FROM jobs
+	WHERE job_id = employee_job_id;
+
+	-- Calculations
+	possible_raise = job_max_salary - current_salary;
+
+	RETURN possible_raise;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT *
+FROM max_raise_2(206);
+
+SELECT *
+FROM employees
+WHERE employee_id = 206;
