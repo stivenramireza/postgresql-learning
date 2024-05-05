@@ -140,3 +140,21 @@ SELECT
 	max_raise_3(employee_id)
 FROM employees
 WHERE employee_id = 206;
+
+-- Returns a table with a function
+CREATE OR REPLACE FUNCTION country_region()
+RETURNS TABLE (id CHARACTER(2), name VARCHAR(40), region VARCHAR(25))
+AS $$
+BEGIN
+	RETURN QUERY 
+	SELECT
+		c.country_id,
+		c.country_name,
+		r.region_name
+	FROM countries AS c
+	INNER JOIN regions AS r ON r.region_id = c.region_id;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT *
+FROM country_region();
