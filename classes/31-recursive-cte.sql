@@ -14,3 +14,19 @@ WITH RECURSIVE countdown(val) AS (
 -- Select of the fields
 SELECT *
 FROM countdown;
+
+-- Organizational structure
+WITH RECURSIVE bosses AS (
+	-- Init
+	SELECT id, name, reports_to
+	FROM employees
+	WHERE id = 7
+	UNION
+	-- Recursive
+	SELECT e.id, e.name, e.reports_to
+	FROM employees AS e
+	INNER JOIN bosses AS b ON b.id = e.reports_to
+)
+
+SELECT *
+FROM bosses;
