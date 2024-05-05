@@ -47,3 +47,36 @@ WITH RECURSIVE bosses AS (
 
 SELECT *
 FROM bosses;
+
+-- Example without recursion
+SELECT
+	f.*,
+	leader.name AS leader,
+	follower.name AS follower
+FROM followers AS f
+INNER JOIN "user" AS leader ON leader.id = f.leader_id
+INNER JOIN "user" AS follower ON follower.id = f.follower_id;
+
+-- Using normal query
+SELECT *
+FROM followers
+WHERE leader_id IN (
+	SELECT follower_id
+	FROM followers
+	WHERE leader_id = 1
+);
+
+-- Using recursive CTE
+WITH RECURSIVE suggestions AS (
+	SELECT leader_id, follower_id, 1 AS depth
+	FROM followers
+	WHERE leader_id = 1
+	UNION
+	SELECT f.leader_id, f.follower_id, depth + 1
+	FROM followers AS f
+	INNER JOIN suggestions ON suggestions.leader_id = f.follower_id
+	WHERE depth < 3
+)
+
+SELECT *
+FROM suggestions;
