@@ -83,6 +83,11 @@ BEGIN
 	-- Calculations
 	possible_raise = job_max_salary - current_salary;
 
+	IF (possible_raise < 0) THEN
+		RAISE EXCEPTION 'Person with salary greater than max_salary: %', empl_id;
+		-- possible_raise = 0;
+	END IF;
+
 	RETURN possible_raise;
 END;
 $$ LANGUAGE plpgsql;
@@ -90,6 +95,10 @@ $$ LANGUAGE plpgsql;
 SELECT *
 FROM max_raise_2(206);
 
-SELECT *
+SELECT
+	employee_id,
+	first_name,
+	salary,
+	max_raise_2(employee_id)
 FROM employees
 WHERE employee_id = 206;
