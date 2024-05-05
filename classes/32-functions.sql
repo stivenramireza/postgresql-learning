@@ -125,7 +125,7 @@ BEGIN
 	possible_raise = selected_job.max_salary - selected_employee.salary;
 
 	IF (possible_raise < 0) THEN
-		RAISE EXCEPTION 'Person with salary greater than max_salary: %', selected_employee.first_name;
+		RAISE EXCEPTION 'Person with salary greater than max_salary: id: %, name: %', selected_employee.employee_id, selected_employee.first_name;
 		-- possible_raise = 0;
 	END IF;
 
