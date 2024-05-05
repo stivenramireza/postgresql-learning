@@ -102,3 +102,41 @@ SELECT
 	max_raise_2(employee_id)
 FROM employees
 WHERE employee_id = 206;
+
+-- max_raise_3 function
+CREATE OR REPLACE FUNCTION max_raise_3(empl_id INT)
+RETURNS NUMERIC(8,2) AS $$
+DECLARE 
+	selected_employee employees%ROWTYPE;
+	selected_job jobs%ROWTYPE;
+	possible_raise NUMERIC(8,2);
+BEGIN
+	-- Take the job position and the salary
+	SELECT *
+	FROM employees INTO selected_employee
+	WHERE employee_id = empl_id;
+	
+	-- Take the max salary based on his job position
+	SELECT *
+	FROM jobs INTO selected_job
+	WHERE job_id = selected_employee.job_id;
+
+	-- Calculations
+	possible_raise = selected_job.max_salary - selected_employee.salary;
+
+	IF (possible_raise < 0) THEN
+		RAISE EXCEPTION 'Person with salary greater than max_salary: %', selected_employee.first_name;
+		-- possible_raise = 0;
+	END IF;
+
+	RETURN possible_raise;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT
+	employee_id,
+	first_name,
+	salary,
+	max_raise_3(employee_id)
+FROM employees
+WHERE employee_id = 206;
