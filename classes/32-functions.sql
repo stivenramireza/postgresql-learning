@@ -19,3 +19,44 @@ SELECT
 	first_name,
 	greet_employee(first_name)
 FROM employees;
+
+-- max_raise function
+SELECT *
+FROM employees;
+
+SELECT *
+FROM jobs;
+
+SELECT
+	e.employee_id,
+	e.first_name,
+	e.salary,
+	j.max_salary,
+	j.max_salary - salary AS possible_raise,
+	max_raise(e.employee_id)
+FROM employees AS e
+INNER JOIN jobs AS j ON j.job_id = e.job_id;
+
+CREATE OR REPLACE FUNCTION max_raise(empl_id INT)
+RETURNS NUMERIC(8,2) AS $$
+DECLARE 
+	-- salary NUMERIC(8,2);
+	-- max_salary NUMERIC(8,2);
+	possible_raise NUMERIC(8,2);
+BEGIN
+	SELECT j.max_salary - salary INTO possible_raise
+	FROM employees AS e
+	INNER JOIN jobs AS j ON j.job_id = e.job_id
+	WHERE e.employee_id = empl_id;
+
+	RETURN possible_raise;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT max_raise(206);
+
+SELECT
+	employee_id,
+	first_name,
+	max_raise(employee_id)
+FROM employees;
